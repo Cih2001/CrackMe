@@ -1,11 +1,16 @@
 TARGET=CrackMe
-all: debug
+DOS=DosStub
 
-debug:
+all: dos pe
+
+dos: $(DOS).asm
+	nasm -f obj $(DOS).asm
+	alink -oEXE $(DOS).obj
+	
+pe:
 	nasm -fwin32 $(TARGET).asm
-	link /subsystem:console /nodefaultlib /entry:main $(TARGET).obj kernel32.lib
+	link /subsystem:console,5.1 /nodefaultlib /entry:main /stub:$(DOS).exe /version:5.1 $(TARGET).obj kernel32.lib
 
-release:
 
 clean:
-	del *.obj $(TARGET) $(TARGET).exe
+	del *.obj *.exe
