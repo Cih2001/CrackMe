@@ -1,6 +1,9 @@
 segment code 
 
-..start: 
+..start:
+	jmp		$
+	push	ax
+	push	bx
 	mov     ax,data 
 	mov     ds,ax 
 	mov     ax,stack 
@@ -14,7 +17,7 @@ segment code
 
 segment data 
 
-hello:  db      'hello, world from dos', 13, 10, '$'
+hello:  db      'This program cannot be run in DOS mode after 1am.', 13, 10, '$'
 
 segment stack stack 
 	resb 64 

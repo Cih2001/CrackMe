@@ -15,7 +15,7 @@ DOS			:=	DosStub
 PE			:=	CrackMe
 FLOPPY		:=	floppy.img
 DISK		:=	disk.img
-
+FIXER		:=	header_fix.py
 #-------------------
 # Tool configuration
 #-------------------
@@ -31,6 +31,8 @@ MAKE_FLAGS	:= --quiet --no-print-directory
 BOCHS		:= bochs
 
 BFI			:= bfi
+
+PYTHON		:= python
 #---------------------
 # Display color macros
 #---------------------

@@ -1,7 +1,7 @@
 DIR_ROOT	:= .
 include $(DIR_ROOT)/config/config.mk
 
-all: dos pe
+all: clean dos pe debug
 
 dos: .force
 	@$(MAKE) $(MAKE_FLAGS) --directory=$(DIR_DOS)
@@ -9,7 +9,7 @@ dos: .force
 pe: .force
 	@$(MAKE) $(MAKE_FLAGS) --directory=$(DIR_WIN)
 
-debug: dos pe
+debug: .force
 	$(BFI) -f=$(DIR_DEBUG)\$(FLOPPY) $(DIR_BUILD)
 	bochs -f $(DIR_CONFIG)\bochsrc.cfg
 
