@@ -6,13 +6,15 @@ DIR_DOS	:= $(DIR_ROOT)\dos
 DIR_BUILD	:= $(DIR_ROOT)\build
 DIR_WIN	:= $(DIR_ROOT)\win
 DIR_CONFIG 	:= $(DIR_ROOT)\config
-
+DIR_DEBUG	:= $(DIR_ROOT)\debug
 #-------------------
 # Project files
 #-------------------
 
 DOS			:=	DosStub
 PE			:=	CrackMe
+FLOPPY		:=	floppy.img
+DISK		:=	disk.img
 
 #-------------------
 # Tool configuration
@@ -28,7 +30,7 @@ MAKE_FLAGS	:= --quiet --no-print-directory
 
 BOCHS		:= bochs
 
-
+BFI			:= bfi
 #---------------------
 # Display color macros
 #---------------------
