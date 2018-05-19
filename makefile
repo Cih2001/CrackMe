@@ -1,16 +1,17 @@
-TARGET=CrackMe
-DOS=DosStub
+DIR_ROOT	:= .
+include $(DIR_ROOT)/config/config.mk
+
+
 
 all: dos pe
 
-dos: $(DOS).asm
-	nasm -f obj $(DOS).asm
-	alink -oEXE $(DOS).obj
+dos: .force
+	@$(MAKE) $(MAKE_FLAGS) --directory=$(DIR_DOS)
 	
-pe:
-	nasm -fwin32 $(TARGET).asm
-	link /subsystem:console,5.1 /nodefaultlib /entry:main /stub:$(DOS).exe /version:5.1 $(TARGET).obj kernel32.lib
+pe: .force
+	@$(MAKE) $(MAKE_FLAGS) --directory=$(DIR_WIN)
 
+.force:
 
 clean:
-	del *.obj *.exe
+	del build\* /Q
