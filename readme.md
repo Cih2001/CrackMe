@@ -40,3 +40,12 @@ set path=C:\Python27;C:\bfi;C:\NASM;C:\ALINK;"C:\Program Files (x86)\Bochs-2.6.9
         e_lfanew: 0x00000080            // File address of the new exe header
     
     each paragragh is 16 byte.
+
+
+##  TODO
+
+    Win32 Read/Write is done.
+    1.  check ENC_SECOND_CODE.
+    2.  write win32 app schema.
+    3.  write DOS rc4 check.
+    4.  write ENC code + rc4 check in win32.

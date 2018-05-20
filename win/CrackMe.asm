@@ -18,6 +18,8 @@ SECTION         .text
 	extern  _GetStdHandle@4
 	extern  _WriteFile@20
 	extern  _ExitProcess@4
+	extern	_ReadFile@20
+	extern	_GetLastError@0
 
 	global _main				; PE Entry
 
@@ -71,6 +73,7 @@ _main16:
 	mov	ax,	0x4c01
 	int	0x21	
 
+
 ;==========================================================================
 ; Entry of 32 bit PE application.
 ;==========================================================================
@@ -80,26 +83,38 @@ _main:
 	mov     ebp, esp
 	sub     esp, 4
 
-	; hStdOut = GetstdHandle( STD_OUTPUT_HANDLE)
-	push    -11
-	call    _GetStdHandle@4
-	mov     ebx, eax    
+	push	String.EnterPassword.Length
+	push	String.EnterPassword
+	call	WriteMessage32
 
-	; WriteFile( hstdOut, message, length(message), &bytes, 0);
-	push    0							; lpOverlapped
-	lea     eax, [ebp-4]
-	push    eax							; Number of bytes written
-	push    String.EnterPassword.Length	; Number of bytes to write
-	push    String.EnterPassword		; buffer
-	push    ebx							; file handle
-	call    _WriteFile@20
+	push	STD_INPUT_HANDLE
+	call	_GetStdHandle@4
+	mov	ebx, eax
 
-	; ExitProcess(0)
-	push    0
-	call    _ExitProcess@4
+	push	0					; lpOverlapped
+	lea	eax, [ebp-4]
+	push	eax					; lpNumberOfBytesRead
+	push	BUFFER_INPUT_LENGTH ; nNumberOfBytesToRead
+	push	Buffer.Input		; lpBuffer
+	push	ebx					; hFile
+	call	_ReadFile@20
+	test	eax, eax
+	jz	.error
+	
+	.error:
+		call _GetLastError@0
+		jmp	.exit
+	.wrong:
+		push	String.Wrong.Length
+		push	String.Wrong
+		call	WriteMessage32
+	.exit:
+		push    0
+		call    _ExitProcess@4
 
 	; never here
 	hlt
+
 
 ;==========================================================================
 ; CheckTime16
@@ -114,6 +129,38 @@ CheckTime16:
 	DEFINE_CHECK_TIME	DOS_TIME_LOW_BOUND,	DOS_TIME_HIGH_BOUND
 
 
+;==========================================================================
+; WriteMessage32
+;
+; Writes a message on std output in 32 bit mode.
+;
+; @return	CF is set if time is out of bound
+;==========================================================================
+bits 32
+WriteMessage32:
+	Arg.Message.Len	equ 0xC
+	Arg.Message		equ 0x8
+	push	ebp
+	mov	ebp, esp
+	sub esp, 4
+
+	push    STD_OUTPUT_HANDLE
+	call    _GetStdHandle@4
+	mov     ebx, eax    
+
+	; WriteFile( hstdOut, message, length(message), &bytes, 0);
+	push    0				; lpOverlapped
+	lea	eax, [ebp-4]
+	push    eax				; Number of bytes written
+	mov	eax, [ebp + Arg.Message.Len]
+	push    eax	            ; Number of bytes to write
+	mov	eax, [ebp + Arg.Message]
+	push    eax		        ; buffer
+	push    ebx				; file handle
+	call    _WriteFile@20
+
+	leave
+	ret	8
 ;==========================================================================
 ; ENCRYPTED INSTRUCTIONS AND DATA
 ; THESE INSTRUCTIONS AND DATA SHOULD BE ENCRYPTED USING PYTHON SCRIPT 
@@ -134,19 +181,19 @@ ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
 
 
 ;SECTION		.data
-Buffer.Input:				times	BUFFER_INPUT_LENGTH	db	0
+Buffer.Input:	times	BUFFER_INPUT_LENGTH	db	0
 Variables:
 	istruc	GlobalVars
 		at	GlobalVars.Input.Length,	dw	0	; Length of enterd password
 	iend
 ; rc4table is used in both in win32 and dos apps
-RC4Table.Start:				rc4table
-String.EnterPassword:		db	'Enter Password:', '$', 0
+RC4Table.Start:					rc4table
+String.EnterPassword:			db	'Enter Password:', '$', 0
 String.EnterPassword.Length:	equ	$-String.EnterPassword-2
-String.Wrong:				db	'Hmm, Not exactly! Try harder', 0xD, 0xA, '$', 0
-String.Wrong.Length:		equ	$-String.EnterPassword-2
-String.Correct:				db	'Congratulations, You are a winner!', 0xD, 0xA, '$', 0
-String.Correct.Length:		equ	$-String.Correct-2
+String.Wrong:					db	'Hmm, Not exactly! Try harder', 0xD, 0xA, '$', 0
+String.Wrong.Length:			equ	$-String.EnterPassword-2
+String.Correct:					db	'Congratulations, You are a winner!', 0xD, 0xA, '$', 0
+String.Correct.Length:			equ	$-String.Correct-2
 
 
 ;==========================================================================

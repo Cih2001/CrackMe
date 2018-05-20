@@ -22,6 +22,8 @@ DOS_TIME_HIGH_BOUND     equ 24
 
 BUFFER_INPUT_LENGTH     equ 0x10
 
+STD_INPUT_HANDLE        equ -10
+STD_OUTPUT_HANDLE       equ -11
 ; It's an structure that contains all global variables.
 struc GlobalVars
     .Input.Length   resw    1   ; Length of entered password

@@ -19,6 +19,7 @@
     %endrep
 %endmacro
 
+
 %macro  ENC_SECOND_CODE 2
     lea ebx,	[Buffer.Input + %1]
     lea edx,    [Encrypted.String.Email.Domain]
