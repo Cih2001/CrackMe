@@ -1,6 +1,9 @@
 import sys
 from rc4 import *
 
+
+# rotr(0xab,4,8) = 0xba
+# rotr(0xab,4,16) = 0x0xb00a
 rotr = lambda val, bits, size : ((val >> bits) & (2**size-1)) | ((val << (size - bits)) & (2**size-1))
 rotl = lambda val, bits, size : ((val << bits) & (2**size-1)) | ((val >> (size - bits)) & (2**size-1))
 

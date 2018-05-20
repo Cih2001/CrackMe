@@ -11,7 +11,16 @@
 %ifndef __CRACKME_CONSTANTS_INC__
 %define __CRACKME_CONSTANTS_INC__
 
-BUFFER_INPUT_LENGTH equ 0x10
+; PASSWORD: CrAcKMe2018@eset.com
+
+PASSWORD_LENGTH         equ 20
+PASSWORD_DOMAIN_START   equ 11
+PASSWORD_DOMAIN_LENGTH  equ PASSWORD_LENGTH - PASSWORD_DOMAIN_START
+
+DOS_TIME_LOW_BOUND      equ 0
+DOS_TIME_HIGH_BOUND     equ 24
+
+BUFFER_INPUT_LENGTH     equ 0x10
 
 ; It's an structure that contains all global variables.
 struc GlobalVars

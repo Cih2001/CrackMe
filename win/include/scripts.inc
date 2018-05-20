@@ -19,9 +19,25 @@
     %endrep
 %endmacro
 
-%macro  ENC_SECOND_CODE 1
-    mov	eax,	Buffer.Input
-    add eax,    %1
+%macro  ENC_SECOND_CODE 2
+    lea ebx,	[Buffer.Input + %1]
+    lea edx,    [Encrypted.String.Email.Domain]
+    mov ecx,    %2
+    %%loop_start:
+    ; Read next char of password domain
+    mov al, byte [ebx]
+    ror al, 4
+    ; Compare it with the encrypted text of domain @eset.com
+    cmp al, byte [edx]
+    jnz %%exit
+    ; They match, Read next char
+    inc edx
+    inc ebx
+    loop    %%loop_start
+    ret
+    %%exit:
+        push    0
+	    call    _ExitProcess@4
 %endmacro
 
 %macro  REPLACE_BYTES 0

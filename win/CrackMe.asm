@@ -111,7 +111,7 @@ _main:
 ;==========================================================================
 bits 16
 CheckTime16:
-	DEFINE_CHECK_TIME	0,	24
+	DEFINE_CHECK_TIME	DOS_TIME_LOW_BOUND,	DOS_TIME_HIGH_BOUND
 
 
 ;==========================================================================
@@ -120,7 +120,6 @@ CheckTime16:
 ; AFTER LINKING IN BINARY FILE
 
 ENC.Signature0:	db	0xde,0xad,0xbe,0xef
-ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
 bits 16
 ENC.First.CodeStart:
 	jmp $
@@ -128,7 +127,9 @@ ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0x
 ENC.First.Data.Length:	equ	$-ENC.First.Data-2
 bits 32
 ENC.Second.CodeStart:
-	ENC_SECOND_CODE 11
+	ENC_SECOND_CODE	PASSWORD_DOMAIN_START,	PASSWORD_DOMAIN_LENGTH
+	
+ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
 ;==========================================================================
 
 
@@ -156,6 +157,3 @@ String.Correct.Length:		equ	$-String.Correct-2
 Encrypted.String.Email.Domain:			db '@eset.com', 0
 Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
 ;==========================================================================
-
-
-; PASSWORD: CrAcKMe2018@eset.com
