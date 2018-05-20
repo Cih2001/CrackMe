@@ -9,22 +9,38 @@
 ; be found in the LICENSE file.
 ;=============================================================================
 
-%include "include\scripts.inc"
+%include "include\scripts.inc"	; Contains general purpose scripts
+%include "include\dos.inc"		; Contains the implementation of DOS functions
 
 SECTION         .text
-
+	
 	extern  _GetStdHandle@4
 	extern  _WriteFile@20
 	extern  _ExitProcess@4
 
-	global _main
+	global _main				; PE Entry
 
+;==========================================================================
 ; Here is the place that DOS application will be continued.
+;==========================================================================
 bits 16
 _main16:
-	call CheckTime
+	;Setting up segment registers.
+	;mov     ax,	dataseg 
+	;mov     ds,	ax
 
+	; Checking that time is between 12am and 1am
+	call	CheckTime16
+	jnc		.time_in_bound
+	mov ax, 0x4c01
+    int 0x21        ; Terminates application.
 
+	.time_in_bound:
+
+	jmp	$
+;==========================================================================
+; Entry of 32 bit PE application.
+;==========================================================================
 bits 32
 _main:
 	; DWORD  bytes;    
@@ -52,15 +68,23 @@ _main:
 	; never here
 	hlt
 
+;==========================================================================
+; CheckTime16
+;
+; Checks to see if the time of execution of program is between defind boundries or not
+; Current boundry is between 12 am and 1 am
+;
+; @return	CF is set if time is out of bound
+;==========================================================================
 bits 16
-CheckTime:
-	jmp $
-	ret
+CheckTime16:
+	DEFINE_CHECK_TIME	0,	24
 	
 SECTION		.data
+
 ; RC4TABLE - it is used in both in win32 and dos apps
 RC4TableSignature:	db	0xde,0xad,0xbe,0xef
-rc4table
+RC4Table:				rc4table
 
 Message:	db      'Hello World!', 10
 MsgLen:		equ     $-Message
