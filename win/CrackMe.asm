@@ -156,3 +156,6 @@ String.Correct.Length:		equ	$-String.Correct-2
 Encrypted.String.Email.Domain:			db '@eset.com', 0
 Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
 ;==========================================================================
+
+
+; PASSWORD: CrAcKMe2018@eset.com
