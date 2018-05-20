@@ -27,7 +27,7 @@ SECTION         .text
 bits 16
 _main16:
 	;Setting up segment registers.
-	mov ax,	cs
+	mov	ax,	cs
 	mov	ds,	ax
 
 	call	CheckTime16
@@ -43,15 +43,16 @@ _main16:
 	int	0x21
 
 	mov	dx,	$$ + Buffer.Input	; Input buffer offset
-	mov cx, BUFFER_INPUT_LENGTH	; No of chars to read
-	mov al,	0					; Std in
-	mov ah, 0x3f				; DOS read
-    int 21h
+	mov	cx, BUFFER_INPUT_LENGTH	; No of chars to read
+	mov	al,	0					; Std in
+	mov	ah, 0x3f				; DOS read
+	int	21h
 	jc .error
 
 	; Store the password length for future use
-	mov bx, $$ + Variables
-	mov word [ds:bx + GlobalVars.Input.Length], ax
+	sub	ax,	2	; removing cr lf.
+	mov	bx, $$ + Variables
+	mov	word [ds:bx + GlobalVars.Input.Length], ax
 	
 	; End if password is not 4 char.
 	; Password is chosen to be 4 char in length to let bruteforce be
@@ -113,6 +114,24 @@ CheckTime16:
 	DEFINE_CHECK_TIME	0,	24
 
 
+;==========================================================================
+; ENCRYPTED INSTRUCTIONS AND DATA
+; THESE INSTRUCTIONS AND DATA SHOULD BE ENCRYPTED USING PYTHON SCRIPT 
+; AFTER LINKING IN BINARY FILE
+
+ENC.Signature0:	db	0xde,0xad,0xbe,0xef
+ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
+bits 16
+ENC.First.CodeStart:
+	jmp $
+ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: CrACkmE2018', 0xd, 0xa, 0
+ENC.First.Data.Length:	equ	$-ENC.First.Data-2
+bits 32
+ENC.Second.CodeStart:
+	ENC_SECOND_CODE 11
+;==========================================================================
+
+
 ;SECTION		.data
 Buffer.Input:				times	BUFFER_INPUT_LENGTH	db	0
 Variables:
@@ -120,7 +139,6 @@ Variables:
 		at	GlobalVars.Input.Length,	dw	0	; Length of enterd password
 	iend
 ; rc4table is used in both in win32 and dos apps
-RC4Table.Signature:			db	0xde,0xad,0xbe,0xef
 RC4Table.Start:				rc4table
 String.EnterPassword:		db	'Enter Password:', '$', 0
 String.EnterPassword.Length:	equ	$-String.EnterPassword-2
@@ -130,3 +148,11 @@ String.Correct:				db	'Congratulations, You are a winner!', 0xD, 0xA, '$', 0
 String.Correct.Length:		equ	$-String.Correct-2
 
 
+;==========================================================================
+; ENCRYPTED INSTRUCTIONS AND DATA
+; THESE INSTRUCTIONS AND DATA SHOULD BE ENCRYPTED USING PYTHON SCRIPT 
+; AFTER LINKING IN BINARY FILE
+
+Encrypted.String.Email.Domain:			db '@eset.com', 0
+Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
+;==========================================================================

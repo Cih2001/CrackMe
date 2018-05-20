@@ -15,7 +15,7 @@ DOS			:=	DosStub
 PE			:=	CrackMe
 FLOPPY		:=	floppy.img
 DISK		:=	disk.img
-FIXER		:=	header_fix.py
+PYSCRIPT	:=	scripts.py
 #-------------------
 # Tool configuration
 #-------------------
