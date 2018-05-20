@@ -27,9 +27,6 @@ def RC4(key):
     return PRGA(S)
 
 def Calc_RC4(key, plaintext):
-    key = 'CrAc'
-    plaintext = b'\xde\xad\xf0\x0d'
-
     def convert_key(s):
         return [ord(c) for c in s]
     key = convert_key(key)
