@@ -1,3 +1,6 @@
+import sys
+debug = False
+
 def KSA(key):
     keylength = len(key)
 
@@ -24,6 +27,14 @@ def PRGA(S):
 
 def RC4(key):
     S = KSA(key)
+    if debug:
+        sys.stdout.write("Table after KSA:")
+        for i, c in enumerate(S):
+            if i % 16 == 0:
+                print
+            sys.stdout.write("%02X " % c)
+            
+        print
     return PRGA(S)
 
 def Calc_RC4(key, plaintext):
@@ -32,7 +43,6 @@ def Calc_RC4(key, plaintext):
     key = convert_key(key)
 
     keystream = RC4(key)
-
     result = ""
     for c in plaintext:
         result += chr(ord(c) ^ keystream.next())
@@ -41,12 +51,12 @@ def Calc_RC4(key, plaintext):
 
 if __name__ == '__main__':
 
-    key = 'CrAc'
+    key = 'hami'
     plaintext = b'\xde\xad\xf0\x0d'
     # ciphertext should be 13e07c53
-
+    debug = True
     rc4 = Calc_RC4(key, plaintext)
-    import sys
+    print "Result:"
     for c in rc4:
         sys.stdout.write("%02X" % ord(c))
     print 

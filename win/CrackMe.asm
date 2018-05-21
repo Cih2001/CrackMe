@@ -12,6 +12,8 @@
 %include "include\scripts.inc"	; Contains general purpose scripts
 %include "include\dos.inc"		; Contains the implementation of DOS functions
 %include "include\constants.inc"; Contains project constants
+%include "include\rc4_16.inc"	; Contains RC4 implementation in DOS mode.
+%include "include\rc4_32.inc"	; Contains RC4 implementation for Win32.
 
 SECTION         .text
 	
@@ -60,9 +62,13 @@ _main16:
 	; Password is chosen to be 4 char in length to let bruteforce be
 	; possible at a convenient amount of time.
 	cmp	ax,	4
-	jnz	.error
+	jb	.error
 
 	jmp	$
+
+	push 4					; Key length
+	push $$ + Buffer.Input  ; Key
+	call KSA16
 
 	.error:
 	; Writing wrong message.
@@ -73,6 +79,21 @@ _main16:
 	mov	ax,	0x4c01
 	int	0x21	
 
+;==========================================================================
+; CheckTime16
+;
+; Checks to see if the time of execution of program is between defind boundries or not
+; Current boundry is between 12 am and 1 am
+;
+; @return	CF is set if time is out of bound
+;==========================================================================
+CheckTime16:
+	DEFINE_CHECK_TIME	DOS_TIME_LOW_BOUND,	DOS_TIME_HIGH_BOUND
+
+;==========================================================================
+; RC4 implementation in DOS.
+;==========================================================================
+RC4_16
 
 ;==========================================================================
 ; Entry of 32 bit PE application.
@@ -132,19 +153,10 @@ _main:
 	; never here
 	hlt
 
-
 ;==========================================================================
-; CheckTime16
-;
-; Checks to see if the time of execution of program is between defind boundries or not
-; Current boundry is between 12 am and 1 am
-;
-; @return	CF is set if time is out of bound
+; RC4 implementation for Win32.
 ;==========================================================================
-bits 16
-CheckTime16:
-	DEFINE_CHECK_TIME	DOS_TIME_LOW_BOUND,	DOS_TIME_HIGH_BOUND
-
+RC4_32
 
 ;==========================================================================
 ; WriteMessage32
@@ -153,7 +165,6 @@ CheckTime16:
 ;
 ; @return	CF is set if time is out of bound
 ;==========================================================================
-bits 32
 WriteMessage32:
 	Arg.Message.Len	equ 0xC
 	Arg.Message		equ 0x8
@@ -209,7 +220,7 @@ Variables:
 		at	GlobalVars.Input.Length,	dw	0	; Length of enterd password
 	iend
 ; rc4table is used in both in win32 and dos apps
-RC4Table.Start:					rc4table
+RC4Table:						rc4table
 String.EnterPassword:			db	'Enter Password:', '$', 0
 String.EnterPassword.Length:	equ	$-String.EnterPassword-2
 String.Wrong:					db	'Hmm, Not exactly! Try harder', 0xD, 0xA, '$', 0
