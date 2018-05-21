@@ -80,8 +80,8 @@ _main16:
 bits 32
 _main:
 	; DWORD  bytes;    
-	mov     ebp, esp
-	sub     esp, 4
+	mov	ebp, esp
+	sub	esp, 4
 
 	push	String.EnterPassword.Length
 	push	String.EnterPassword
@@ -101,8 +101,25 @@ _main:
 	test	eax, eax
 	jz	.error
 	
+	; RC4 input with first phase (email)
+	; cmp sig1
+	; jnz .wrong
+
+	call	ENC.Second.CodeStart
+	test	eax, eax
+	jz	.wrong
+
+	; RC4 input with whole password (email@domain)
+	; cmp sig2
+	; jnz .wrong
+
+	push	String.Correct.Length
+	push	String.Correct
+	call	WriteMessage32
+	jmp	.exit
+	
 	.error:
-		call _GetLastError@0
+		call	_GetLastError@0
 		jmp	.exit
 	.wrong:
 		push	String.Wrong.Length
@@ -142,22 +159,22 @@ WriteMessage32:
 	Arg.Message		equ 0x8
 	push	ebp
 	mov	ebp, esp
-	sub esp, 4
+	sub	esp, 4
 
 	push    STD_OUTPUT_HANDLE
 	call    _GetStdHandle@4
 	mov     ebx, eax    
 
 	; WriteFile( hstdOut, message, length(message), &bytes, 0);
-	push    0				; lpOverlapped
+	push	0				; lpOverlapped
 	lea	eax, [ebp-4]
-	push    eax				; Number of bytes written
+	push	eax				; Number of bytes written
 	mov	eax, [ebp + Arg.Message.Len]
-	push    eax	            ; Number of bytes to write
+	push	eax	            ; Number of bytes to write
 	mov	eax, [ebp + Arg.Message]
-	push    eax		        ; buffer
-	push    ebx				; file handle
-	call    _WriteFile@20
+	push	eax		        ; buffer
+	push	ebx				; file handle
+	call	_WriteFile@20
 
 	leave
 	ret	8
@@ -171,12 +188,17 @@ bits 16
 ENC.First.CodeStart:
 	jmp $
 ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: CrACkmE2018', 0xd, 0xa, 0
+; ABOVE CODE SHOULD BE ENCRYPTED BY CrAc
+
+ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
 ENC.First.Data.Length:	equ	$-ENC.First.Data-2
 bits 32
 ENC.Second.CodeStart:
 	ENC_SECOND_CODE	PASSWORD_DOMAIN_START,	PASSWORD_DOMAIN_LENGTH
-	
-ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
+;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018
+
+ENC.Signature2:	db	0xbe,0x57,0xc0,0xde
+;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018@eset.com
 ;==========================================================================
 
 

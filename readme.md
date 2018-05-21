@@ -44,8 +44,8 @@ set path=C:\Python27;C:\bfi;C:\NASM;C:\ALINK;"C:\Program Files (x86)\Bochs-2.6.9
 
 ##  TODO
 
-    Win32 Read/Write is done.
-    1.  check ENC_SECOND_CODE.
-    2.  write win32 app schema.
-    3.  write DOS rc4 check.
-    4.  write ENC code + rc4 check in win32.
+    DONE: Win32 Read/Write.
+    DONE: Check ENC_SECOND_CODE.
+    DONE: Write win32 app schema.
+    2.  Write DOS rc4 check.
+    3.  Write ENC code + rc4 check in win32.

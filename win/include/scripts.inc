@@ -30,15 +30,15 @@
     ror al, 4
     ; Compare it with the encrypted text of domain @eset.com
     cmp al, byte [edx]
-    jnz %%exit
+    jnz %%error
     ; They match, Read next char
     inc edx
     inc ebx
     loop    %%loop_start
+    mov byte [%%error+1], 1
+    %%error:
+    mov eax, 0
     ret
-    %%exit:
-        push    0
-	    call    _ExitProcess@4
 %endmacro
 
 %macro  REPLACE_BYTES 0
