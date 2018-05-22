@@ -15,7 +15,7 @@
 %include "include\rc4_16.inc"	; Contains RC4 implementation in DOS mode.
 %include "include\rc4_32.inc"	; Contains RC4 implementation for Win32.
 
-SECTION         .text
+SECTION	.text
 	
 	extern  _GetStdHandle@4
 	extern  _WriteFile@20
@@ -129,6 +129,11 @@ _main:
 	; RC4 input with first phase (email)
 	; cmp sig1
 	; jnz .wrong
+	mov	eax, [ebp-4] ; Number of read bytes.
+	sub	eax, 2		 ; Remove CR LF from end of string
+	push	eax
+	push	Buffer.Input
+	call	KSA32
 
 	call	ENC.Second.CodeStart
 	test	eax, eax
@@ -156,7 +161,8 @@ _main:
 
 	; never here
 	hlt
-
+	leave
+	ret
 ;==========================================================================
 ; RC4 implementation for Win32.
 ;==========================================================================
@@ -225,15 +231,19 @@ Variables:
 		at	GlobalVars.Input.Length,	dw	0	; Length of enterd password
 	iend
 ; rc4table is used in both in win32 and dos apps
-RC4Table:						rc4table
+LookupTable:						rc4table
 String.EnterPassword:			db	'Enter Password:', '$', 0
 String.EnterPassword.Length:	equ	$-String.EnterPassword-2
-String.Wrong:					db	'Hmm, Not exactly! Try harder', 0xD, 0xA, '$', 0
-String.Wrong.Length:			equ	$-String.EnterPassword-2
+String.Wrong:					db	'Hmm, Not exactly! Try harder.', 0xD, 0xA, '$', 0
+String.Wrong.Length:			equ	$-String.Wrong-2
 String.Correct:					db	'Congratulations, You are a winner!', 0xD, 0xA, '$', 0
 String.Correct.Length:			equ	$-String.Correct-2
 
 
+Str.Test:	db 'This is a test string with no use',0
+Str.Test.Length:	equ	$-Str.Test-1
+
+SECTION	.data
 ;==========================================================================
 ; ENCRYPTED INSTRUCTIONS AND DATA
 ; THESE INSTRUCTIONS AND DATA SHOULD BE ENCRYPTED USING PYTHON SCRIPT 
@@ -242,6 +252,3 @@ String.Correct.Length:			equ	$-String.Correct-2
 Encrypted.String.Email.Domain:			db '@eset.com', 0
 Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
 ;==========================================================================
-
-Str.Test:	db 'This is a test string with no use',0
-Str.Test.Length:	equ	$-Str.Test-1
