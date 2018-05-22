@@ -48,6 +48,6 @@ set path=C:\Python27;C:\bfi;C:\NASM;C:\ALINK;"C:\Program Files (x86)\Bochs-2.6.9
     DONE: Check ENC_SECOND_CODE.
     DONE: Write win32 app schema.
     DONE: RC4 algo for DOS
-    1.  Write RC4 algo for windows
-    2.  Write DOS rc4 check.
-    3.  Write ENC code + rc4 check in win32.
+    DONE: Write RC4 algo for windows
+    1.  Write DOS rc4 check.
+    2.  Write ENC code + rc4 check in win32.

@@ -135,6 +135,10 @@ _main:
 	push	Buffer.Input
 	call	KSA32
 
+	push	Str.Test.Length
+	push	Str.Test
+	call	PRGA32
+
 	call	ENC.Second.CodeStart
 	test	eax, eax
 	jz	.wrong

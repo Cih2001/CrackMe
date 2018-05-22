@@ -82,9 +82,44 @@
     %define input_len arg1
     push    ebp
     mov ebp, esp
-    push    0 ; for i
-    push    0 ; for j
+    
+    mov i, 0
+    mov j, 0
 
+    %%.loop:
+        cmp dword [input_len], 0
+        jz %%.exit
+        ; i++
+        inc i
+
+        ; compute j = (j + S[i]) mod 256
+        ; + S[i]
+        movzx   eax, byte [i + LookupTable]
+        add j, eax
+        and j, 0x000000ff
+
+        ; swap S[i], S[j]
+        movzx   eax, byte [i + LookupTable]
+        movzx   ebx, byte [j + LookupTable]
+        mov byte [i + LookupTable], bl
+        mov byte [j + LookupTable], al
+
+        ; G = S[(S[i]+S[j]) mod 256]
+        movzx   eax, byte [i + LookupTable]
+        movzx   ebx, byte [j + LookupTable]
+        add eax, ebx
+        and eax, 0x000000ff
+        movzx   eax, byte [eax + LookupTable]
+
+        ; update input[i] ^= G
+        mov ebx, [input]
+        add ebx, i
+        xor byte [ebx-1] , al
+    
+        dec dword [input_len]
+    jmp %%.loop
+
+    %%.exit:
     leave
     ret 8
 %endmacro
