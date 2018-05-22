@@ -45,14 +45,17 @@ def Calc_RC4(key, plaintext):
     keystream = RC4(key)
     result = ""
     for c in plaintext:
-        result += chr(ord(c) ^ keystream.next())
+        G = keystream.next()
+        if debug: 
+            print "%02X ^ %02X = %02X" % (ord(c),G,ord(c)^G)
+        result += chr(ord(c) ^ G)
     
     return result
 
 if __name__ == '__main__':
 
     key = 'hami'
-    plaintext = b'\xde\xad\xf0\x0d'
+    plaintext = 'This is a test string with no use'
     # ciphertext should be 13e07c53
     debug = True
     rc4 = Calc_RC4(key, plaintext)

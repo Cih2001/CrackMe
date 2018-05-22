@@ -64,11 +64,15 @@ _main16:
 	cmp	ax,	4
 	jb	.error
 
+	push	4					; Key length
+	push	$$ + Buffer.Input  ; Key
+	call	KSA16
 	jmp	$
-
-	push 4					; Key length
-	push $$ + Buffer.Input  ; Key
-	call KSA16
+	;push ENC.End - ENC.Signature0	; data length
+	;push $$ + ENC.Signature0  		; data to decrypt
+	push	Str.Test.Length
+	push	$$ + Str.Test
+	call PRGA16
 
 	.error:
 	; Writing wrong message.
@@ -209,6 +213,7 @@ ENC.Second.CodeStart:
 ;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018
 
 ENC.Signature2:	db	0xbe,0x57,0xc0,0xde
+ENC.End:
 ;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018@eset.com
 ;==========================================================================
 
@@ -237,3 +242,6 @@ String.Correct.Length:			equ	$-String.Correct-2
 Encrypted.String.Email.Domain:			db '@eset.com', 0
 Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
 ;==========================================================================
+
+Str.Test:	db 'This is a test string with no use',0
+Str.Test.Length:	equ	$-Str.Test-1

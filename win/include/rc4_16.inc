@@ -98,7 +98,58 @@
 %endmacro
 
 %macro  PRGA_16 0
+    %define input_16 arg0
+    %define input_16_len arg1
+    push bp
+    mov bp, sp
+    push 0  ; i = 0
+    push 0  ; j = 0
 
+    %%.loop:
+        cmp word [input_16_len], 0
+        jz %%.exit
+        ; i++
+        inc word [i]
+
+        ; compute j = (j + S[i]) mod 256
+        mov cx, [j] 
+
+        ; + S[i]
+        table_read  al, i
+        xor ah, ah
+        add cx, ax
+        mod cx, 0x100
+
+        ; update j
+        mov [j], cx
+
+        ; swap S[i], S[j]
+        table_read  al, i  ; al = S[i]
+        table_read  ah, j  ; ah = S[j]
+        table_save  i, ah
+        table_save  j, al
+
+        ; G = S[(S[i]+S[j]) mod 256]
+        table_read  cl, i
+        table_read  al, j
+        add cl, al
+        xor ch, ch
+        add cx, $$ + RC4Table
+        xchg    cx, bx
+        mov al, byte [bx]
+
+        ; update input[i] ^= G
+        mov bx, [input_16]
+        add bx, [i]
+        xor byte [bx-1] , al
+    
+        dec word [input_16_len]
+    jmp %%.loop
+
+    %%.exit:
+    mov sp, bp
+    pop bp
+    ret 4
 %endmacro
 
 %endif
