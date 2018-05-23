@@ -139,23 +139,29 @@ _main:
 	; RC4 input with first phase (email)
 	; cmp sig1
 	; jnz .wrong
-	mov	eax, [ebp-4] ; Number of read bytes.
-	sub	eax, 2		 ; Remove CR LF from end of string
-	push	eax
+	push	PASSWORD_DOMAIN_START
 	push	Buffer.Input
 	call	KSA32
 
-	push	Str.Test.Length
-	push	Str.Test
+	push	ENC.Signature2 - ENC.Signature0
+	push	ENC.Signature0
 	call	PRGA32
 
 	call	ENC.Second.CodeStart
 	test	eax, eax
 	jz	.wrong
 
+	mov	eax, [ebp-4] ; Number of read bytes.
+	sub	eax, 2		 ; Remove CR LF from end of string
+	push	eax
+	call	KSA32
+
+	push	ENC.End - ENC.Signature0
+	push	ENC.Signature0
+	call	PRGA32
 	; RC4 input with whole password (email@domain)
-	; cmp sig2
-	; jnz .wrong
+	cmp	dword [ENC.Signature2],	0xbe57c0de
+	jnz	.wrong
 
 	push	String.Correct.Length
 	push	String.Correct

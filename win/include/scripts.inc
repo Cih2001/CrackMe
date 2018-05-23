@@ -21,6 +21,7 @@
 
 
 %macro  ENC_SECOND_CODE 2
+    nop
     lea ebx,	[Buffer.Input + %1]
     lea edx,    [Encrypted.String.Email.Domain]
     mov ecx,    %2
