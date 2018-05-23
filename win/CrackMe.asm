@@ -67,13 +67,23 @@ _main16:
 	push	4					; Key length
 	push	$$ + Buffer.Input  ; Key
 	call	KSA16
-	jmp	$
-	;push ENC.End - ENC.Signature0	; data length
-	;push $$ + ENC.Signature0  		; data to decrypt
-	push	Str.Test.Length
-	push	$$ + Str.Test
+
+	push ENC.End - ENC.Signature0	; data length
+	push $$ + ENC.Signature0  		; data to decrypt
 	call PRGA16
 
+	;Checking for the signature.
+	mov bx, $$ + ENC.Signature0
+	cmp byte [bx], 0xde
+	jnz .error
+	cmp byte [bx + 1], 0xad
+	jnz .error
+	cmp byte [bx + 2], 0xbe
+	jnz .error
+	cmp byte [bx + 3], 0xef
+	jnz .error
+	mov bx, $$ + ENC.First.CodeStart
+	jmp bx
 	.error:
 	; Writing wrong message.
 	mov	dx,	$$ + String.Wrong 
@@ -211,8 +221,14 @@ WriteMessage32:
 ENC.Signature0:	db	0xde,0xad,0xbe,0xef
 bits 16
 ENC.First.CodeStart:
-	jmp $
-ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: CrACkmE2018', 0xd, 0xa, 0
+	; Writing 'Good job' message.
+	mov	dx,	$$ + ENC.First.Data 
+	mov	ah,	9 
+	int	0x21
+	; Terminate the program
+	mov	ax,	0x4c01
+	int	0x21
+ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: CrAcKMe2018', '$', 0
 ; ABOVE CODE SHOULD BE ENCRYPTED BY CrAc
 
 ENC.Signature1:	db	0xba,0xdb,0x00,0xb5

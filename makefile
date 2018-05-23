@@ -12,9 +12,9 @@ pe: .force
 floppy:	.force
 	$(BFI) -f=$(DIR_DEBUG)\$(FLOPPY) $(DIR_BUILD)
 
-debug: floppy .force
+debug: floppy
 	bochs -f $(DIR_CONFIG)\bochsrc.cfg
-
+	
 .force:
 
 clean:
