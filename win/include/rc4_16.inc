@@ -11,19 +11,19 @@
 %ifndef __CRACKME_RC4_16_INC__
 %define __CRACKME_RC4_16_INC__
 
-%define i16       bp-2
-%define j16       bp-4
-%define arg16_0    bp+4
-%define arg16_1    bp+6
+%define i16 bp-2
+%define j16 bp-4
+%define arg16_0 bp+4
+%define arg16_1 bp+6
 
 %macro table_read 2
-    mov bx,	$$ + LookupTable
+    mov bx, $$ + LookupTable
     add bx, [%2]
     mov %1, byte [bx] 
 %endmacro
 
 %macro  table_save 2
-    mov bx,	$$ + LookupTable
+    mov bx, $$ + LookupTable
     add bx, [%1]
     mov byte [bx], %2 
 %endmacro
@@ -98,16 +98,16 @@
 %endmacro
 
 %macro  PRGA_16 0
-    %define input_16 arg16_0
-    %define input_16_len arg16_1
-    push bp
+    %define input_16    arg16_0
+    %define input_16_len    arg16_1
+    push    bp
     mov bp, sp
-    push 0  ; i = 0
-    push 0  ; j = 0
+    push    0  ; i = 0
+    push    0  ; j = 0
 
     %%.loop:
         cmp word [input_16_len], 0
-        jz %%.exit
+        jz  %%.exit
         ; i++
         inc word [i16]
 

@@ -13,17 +13,17 @@
 
 ; PASSWORD: CrAcKMe2018@eset.com
 
-PASSWORD_LENGTH         equ 20
+PASSWORD_LENGTH equ 20
 PASSWORD_DOMAIN_START   equ 11
 PASSWORD_DOMAIN_LENGTH  equ PASSWORD_LENGTH - PASSWORD_DOMAIN_START
 
-DOS_TIME_LOW_BOUND      equ 0
-DOS_TIME_HIGH_BOUND     equ 1
+DOS_TIME_LOW_BOUND  equ 0
+DOS_TIME_HIGH_BOUND equ 1
 
-BUFFER_INPUT_LENGTH     equ 0x20
+BUFFER_INPUT_LENGTH equ 0x20
 
-STD_INPUT_HANDLE        equ -10
-STD_OUTPUT_HANDLE       equ -11
+STD_INPUT_HANDLE    equ -10
+STD_OUTPUT_HANDLE   equ -11
 ; It's an structure that contains all global variables.
 struc GlobalVars
     .Input.Length   resw    1   ; Length of entered password

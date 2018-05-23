@@ -53,4 +53,4 @@ set path=C:\Python27;C:\bfi;C:\NASM;C:\ALINK;"C:\Program Files (x86)\Bochs-2.6.9
     DONE: Write RC4 algo for windows
     DONE: Python encryption post script for rc4 regions is done.
     DONE: Write DOS rc4 check.
-    1.  Write ENC code + rc4 check in win32.
+    DONE: Write ENC code + rc4 check in win32.

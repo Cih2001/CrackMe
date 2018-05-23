@@ -18,15 +18,15 @@
 
 %macro  key_read32 2
     ; mov al, key16 [i mod len]
-    push edx
+    push    edx
     mov eax, %2
     mov edx, 0     
-	mov ebx, [key_len]
-	div ebx       ; Divides dx:ax by bx. DX = remainder and AX = qotient
+    mov ebx, [key_len]
+    div ebx       ; Divides dx:ax by bx. DX = remainder and AX = qotient
     and edx, 0x000000ff
     mov ebx, [key]
     add ebx, edx
-    movzx %1, byte[ebx]
+    movzx   %1, byte[ebx]
     pop edx
 %endmacro
 
@@ -60,7 +60,6 @@
         ; + key16[i mod key_len]
         key_read32  eax, i
         add j, eax
-
         and j, 0x000000ff
 
         ; swap S[i], S[j]

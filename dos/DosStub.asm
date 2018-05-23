@@ -9,7 +9,7 @@
 ; Use of this source code is governed by a BSD-style license that can
 ; be found in the LICENSE file.
 ;=============================================================================
-OFFSET_START	equ 0x400
+OFFSET_START	equ	0x400
 SEGMENT_INSERT	equ	(OFFSET_START - 0x50) >> 4
 
 segment code
@@ -18,22 +18,22 @@ bits 16
 
 ..start:
 	;Setting up segment registers.
-	mov	ax,	data 
-	mov	ds,	ax 
-	mov	ax,	stack 
-	mov	ss,	ax 
-	mov	sp,	stacktop
+	mov	ax, data 
+	mov	ds, ax 
+	mov	ax, stack 
+	mov	ss, ax 
+	mov	sp, stacktop
 
 	;Writing 'cannot run in DOS' message.
-	mov	dx,	String.NotDosApplication 
-	mov	ah,	9 
+	mov	dx, String.NotDosApplication 
+	mov	ah, 9 
 	int	0x21
 
 	; OK This works for a jump inside text section of pe file.
-	mov ax, cs
+	mov	ax, cs
 	add	ax, SEGMENT_INSERT
-	push ax
-	push 0
+	push	ax
+	push	0
 	retf
 
 segment data 

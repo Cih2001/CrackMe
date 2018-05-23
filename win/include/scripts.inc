@@ -22,8 +22,13 @@
 
 %macro  ENC_SECOND_CODE 2
     nop
-    lea ebx,	[Buffer.Input + %1]
-    lea edx,    [Encrypted.String.Email.Domain]
+    call    $ + 5
+    pop eax
+    and eax, 0xffff0000
+    lea ebx, [Buffer.Input - $$ + 0x1000 + %1]
+    lea edx, [Encrypted.String.Email.Domain - $$ + 0x1000]
+    add ebx, eax
+    add edx, eax
     mov ecx,    %2
     %%loop_start:
     ; Read next char of password domain
@@ -36,14 +41,11 @@
     inc edx
     inc ebx
     loop    %%loop_start
-    mov byte [%%error+1], 1
+    mov eax, 1
+    ret
     %%error:
     mov eax, 0
     ret
-%endmacro
-
-%macro  REPLACE_BYTES 0
-    %line 1+1 test2.inc
 %endmacro
 
 %endif
