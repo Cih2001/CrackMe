@@ -14,6 +14,8 @@
 %include "include\constants.inc"; Contains project constants
 %include "include\rc4_16.inc"	; Contains RC4 implementation in DOS mode.
 %include "include\rc4_32.inc"	; Contains RC4 implementation for Win32.
+%include "include\obfuscation_16.inc"	; Contains obfuscation methods for DOS mode.
+%include "include\obfuscation_32.inc"	; Contains obfuscation methods for Win32.
 
 SECTION	.text
 	
@@ -31,6 +33,9 @@ SECTION	.text
 bits 16
 _main16:
 	;Setting up segment registers.
+	OBFUSCATION_OPAQE_PRED_2 c, 0xe8, 0x90
+	OBFUSCATION_SHARED_BYTE
+
 	mov	ax, cs
 	mov	ds, ax
 
@@ -43,13 +48,15 @@ _main16:
 
 	; Writing 'Enter password' message.
 	mov	dx, $$ + String.EnterPassword 
-	mov	ah, 9 
+	mov	ah, 9
+	OBFUSCATION_OPAQE_PRED_2 z, 0xeb
 	int	0x21
 
 	mov	dx, $$ + Buffer.Input	; Input buffer offset
 	mov	cx, BUFFER_INPUT_LENGTH	; No of chars to read
 	xor	bx, bx	; Std in
 	mov	ah, 0x3f	; DOS read
+	OBFUSCATION_OPAQE_PRED_2 s, 0xff, 0x90, 0xeb
 	int	21h
 	jc .error
 
@@ -63,11 +70,13 @@ _main16:
 	; possible at a convenient amount of time.
 	cmp	ax, 3
 	jb	.error
-
+	OBFUSCATION_OPAQE_PRED_2 b, 0xe8
 	push	3	; Key length
 	push	$$ + Buffer.Input  ; Key
 	call	KSA16
 
+	OBFUSCATION_OPAQE_PRED_2 c, 0xe8, 0x90
+	OBFUSCATION_SHARED_BYTE
 	push	ENC.End - ENC.Signature0	; data length
 	push	$$ + ENC.Signature0	; data to decrypt
 	call	PRGA16
@@ -75,19 +84,24 @@ _main16:
 	;Checking for the signature.
 	mov	bx, $$ + ENC.Signature0
 	cmp	byte [bx], 0xde
+	OBFUSCATION_OPAQE_PRED_2 z, 0xf6
 	jnz	.error
 	cmp	byte [bx + 1], 0xad
+	OBFUSCATION_OPAQE_PRED_2 z, 0xeb, 0xbe, 0x0
 	jnz	.error
 	cmp	byte [bx + 2], 0xbe
+	OBFUSCATION_OPAQE_PRED_2 z, 0xe3
 	jnz	.error
 	cmp	byte [bx + 3], 0xef
+	OBFUSCATION_OPAQE_PRED_2 z, 0xac
 	jnz	.error
 	mov	bx, $$ + ENC.First.CodeStart
 	jmp	bx
 	.error:
 	; Writing wrong message.
 	mov	dx, $$ + String.Wrong 
-	mov	ah, 9 
+	mov	ah, 9
+	OBFUSCATION_SHARED_BYTE
 	int	0x21
 	; Terminates application.
 	mov	ax, 0x4c01
