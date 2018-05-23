@@ -147,6 +147,15 @@ _main:
 	push	ENC.Signature0
 	call	PRGA32
 
+	cmp	byte [ENC.Signature1],	0xba
+	jnz	.wrong
+	cmp	byte [ENC.Signature1+1],	0xdb
+	jnz	.wrong
+	cmp	byte [ENC.Signature1+2],	0x00
+	jnz	.wrong
+	cmp	byte [ENC.Signature1+3],	0xb5
+	jnz	.wrong
+
 	call	ENC.Second.CodeStart
 	test	eax, eax
 	jz	.wrong
@@ -154,13 +163,20 @@ _main:
 	mov	eax, [ebp-4] ; Number of read bytes.
 	sub	eax, 2		 ; Remove CR LF from end of string
 	push	eax
+	push	Buffer.Input
 	call	KSA32
 
 	push	ENC.End - ENC.Signature0
 	push	ENC.Signature0
 	call	PRGA32
 	; RC4 input with whole password (email@domain)
-	cmp	dword [ENC.Signature2],	0xbe57c0de
+	cmp	byte [ENC.Signature2],	0xbe
+	jnz	.wrong
+	cmp	byte [ENC.Signature2+1],	0x57
+	jnz	.wrong
+	cmp	byte [ENC.Signature2+2],	0xc0
+	jnz	.wrong
+	cmp	byte [ENC.Signature2+3],	0xde
 	jnz	.wrong
 
 	push	String.Correct.Length
