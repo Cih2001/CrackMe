@@ -48,7 +48,7 @@ _main16:
 
 	mov	dx, $$ + Buffer.Input	; Input buffer offset
 	mov	cx, BUFFER_INPUT_LENGTH	; No of chars to read
-	mov	al, 0	; Std in
+	xor	bx, bx	; Std in
 	mov	ah, 0x3f	; DOS read
 	int	21h
 	jc .error
@@ -61,10 +61,10 @@ _main16:
 	; End if password is not 4 char.
 	; Password is chosen to be 4 char in length to let bruteforce be
 	; possible at a convenient amount of time.
-	cmp	ax, 4
+	cmp	ax, 3
 	jb	.error
 
-	push	4	; Key length
+	push	3	; Key length
 	push	$$ + Buffer.Input  ; Key
 	call	KSA16
 
@@ -108,6 +108,9 @@ CheckTime16:
 ; RC4 implementation in DOS.
 ;==========================================================================
 RC4_16
+
+; It's a signature for python script to find end of DOS region.
+DOS.End:	db	0xbe, 0xef
 
 ;==========================================================================
 ; Entry of 32 bit PE application.

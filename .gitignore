@@ -1,6 +1,6 @@
 build/
 debug/
-
+.*/
 
 *.id0
 *.id1
