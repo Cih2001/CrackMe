@@ -131,7 +131,8 @@ DOS.End:	db	0xbe, 0xef
 ;==========================================================================
 bits 32
 _main:
-	; DWORD  bytes;    
+	; DWORD  bytes; 
+	pusha   
 	mov	ebp, esp
 	sub	esp, 4
 
@@ -209,6 +210,8 @@ _main:
 		push	String.Wrong
 		call	WriteMessage32
 	.exit:
+		mov	esp, ebp
+		popa
 		push	0
 		call	_ExitProcess@4
 
@@ -267,7 +270,7 @@ ENC.First.CodeStart:
 	; Terminate the program
 	mov	ax, 0x4c01
 	int	0x21
-ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: CrAcKMe2018', '$', 0
+ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: github.com', '$', 0
 ; ABOVE CODE SHOULD BE ENCRYPTED BY CrAc
 
 ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
@@ -306,6 +309,6 @@ SECTION	.data
 ; THESE INSTRUCTIONS AND DATA SHOULD BE ENCRYPTED USING PYTHON SCRIPT 
 ; AFTER LINKING IN BINARY FILE
 
-Encrypted.String.Email.Domain:			db '@eset.com', 0
-Encrypted.String.Email.Domain.Length:	equ	$ - Encrypted.String.Email.Domain-1
+Encrypted.String.Addr.Domain:			db '/cih2001/CrackMe', 0
+Encrypted.String.Addr.Domain.Length:	equ	$ - Encrypted.String.Addr.Domain-1
 ;==========================================================================

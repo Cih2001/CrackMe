@@ -26,7 +26,7 @@
     pop eax
     and eax, 0xffff0000
     lea ebx, [Buffer.Input - $$ + 0x1000 + %1]
-    lea edx, [Encrypted.String.Email.Domain - $$ + 0x1000]
+    lea edx, [Encrypted.String.Addr.Domain - $$ + 0x1000]
     add ebx, eax
     add edx, eax
     mov ecx,    %2
