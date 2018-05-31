@@ -271,18 +271,18 @@ ENC.First.CodeStart:
 	mov	ax, 0x4c01
 	int	0x21
 ENC.First.Data:	db	'Good job! for all your efforts, I give you a hint.', 0xd, 0xa, 'Password begins with: github.com', '$', 0
-; ABOVE CODE SHOULD BE ENCRYPTED BY CrAc
+; ABOVE CODE SHOULD BE ENCRYPTED BY git
 
 ENC.Signature1:	db	0xba,0xdb,0x00,0xb5
 ENC.First.Data.Length:	equ	$-ENC.First.Data-2
 bits 32
 ENC.Second.CodeStart:
 	ENC_SECOND_CODE	PASSWORD_DOMAIN_START, PASSWORD_DOMAIN_LENGTH
-;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018
+;ABOVE CODE SHOULD BE ENCRYPTED BY github.com
 
 ENC.Signature2:	db	0xbe,0x57,0xc0,0xde
 ENC.End:
-;ABOVE CODE SHOULD BE ENCRYPTED BY CrAcKMe2018@eset.com
+;ABOVE CODE SHOULD BE ENCRYPTED BY github.com/cih2001/CrackMe
 ;==========================================================================
 
 Buffer.Input:	times	BUFFER_INPUT_LENGTH	db	0
